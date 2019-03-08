@@ -1,0 +1,11 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "isCreatingSolution": true,
+    "environment": "spo",
+    "version": "1.7.1",
+    "libraryName": "k-2-api-webpart",
+    "libraryId": "4f7c70d3-2fa3-4b59-8c92-3e19938e250c",
+    "packageManager": "npm",
+    "componentType": "webpart"
+  }
+}

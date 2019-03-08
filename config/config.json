@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "k-2-api-web-part-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/k2ApiWebPart/K2ApiWebPartWebPart.js",
+          "manifest": "./src/webparts/k2ApiWebPart/K2ApiWebPartWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "K2ApiWebPartWebPartStrings": "lib/webparts/k2ApiWebPart/loc/{locale}.js"
+  }
+}
