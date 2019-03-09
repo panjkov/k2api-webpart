@@ -12,7 +12,6 @@ import * as strings from 'K2ApiWebPartWebPartStrings';
 import { tasks } from '@microsoft/teams-js';
 
 export interface IK2ApiWebPartWebPartProps {
-  description: string;
   k2ServerURL: string;
 }
 
@@ -75,11 +74,8 @@ export default class K2ApiWebPartWebPart extends BaseClientSideWebPart<IK2ApiWeb
           },
           groups: [
             {
-              groupName: strings.BasicGroupName,
+              groupName: strings.ConfigurationGroupName,
               groupFields: [
-                PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
-                }),
                 PropertyPaneTextField('k2ServerURL', {
                   label: strings.k2ServerURLFieldLabel
                 })

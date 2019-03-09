@@ -20,7 +20,6 @@
     "description": { "default": "K2 API Web Part description" },
     "officeFabricIconFontName": "Page",
     "properties": {
-      "description": "K2 API Web Part",
       "k2ServerURL": "https://denallix.onk2.com"
     }
   }]

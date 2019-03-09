@@ -1,7 +1,6 @@
 declare interface IK2ApiWebPartWebPartStrings {
   PropertyPaneDescription: string;
-  BasicGroupName: string;
-  DescriptionFieldLabel: string;
+  ConfigurationGroupName: string;
   k2ServerURLFieldLabel: string;
 }
 
