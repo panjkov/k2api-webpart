@@ -3,7 +3,7 @@
   "solution": {
     "name": "k-2-api-webpart-client-side-solution",
     "id": "4f7c70d3-2fa3-4b59-8c92-3e19938e250c",
-    "version": "1.0.0.2",
+    "version": "1.0.0.3",
     "includeClientSideAssets": true,
     "webApiPermissionRequests": [
       {

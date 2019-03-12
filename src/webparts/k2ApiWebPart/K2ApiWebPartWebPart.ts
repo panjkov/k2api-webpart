@@ -7,9 +7,12 @@ import {
 import { escape } from '@microsoft/sp-lodash-subset';
 import { AadHttpClient, HttpClientResponse} from '@microsoft/sp-http';
 
+import {IK2Worklist, IK2Task} from './K2DataContracts';
+import {K2DataReader} from './K2DataReader';
+import {K2DataView} from './K2DataView';
+
 import styles from './K2ApiWebPartWebPart.module.scss';
 import * as strings from 'K2ApiWebPartWebPartStrings';
-import { tasks } from '@microsoft/teams-js';
 
 export interface IK2ApiWebPartWebPartProps {
   k2ServerURL: string;
@@ -17,6 +20,7 @@ export interface IK2ApiWebPartWebPartProps {
 
 export default class K2ApiWebPartWebPart extends BaseClientSideWebPart<IK2ApiWebPartWebPartProps> {
   private aadClient: AadHttpClient;
+  private _dataReader: K2DataReader;
 
   protected onInit(): Promise<void> {
     return new Promise<void>((resolve: () => void, reject: (error:any) => void): void => {
@@ -25,37 +29,18 @@ export default class K2ApiWebPartWebPart extends BaseClientSideWebPart<IK2ApiWeb
       .then((client: AadHttpClient): void => {
         this.aadClient = client;
         resolve();
+        this._dataReader = new K2DataReader(this.aadClient);
       }, err => reject(err));
     });
 
   }
 
   public render(): void {
-    this.context.statusRenderer.displayLoadingIndicator(this.domElement, 'k2ApiWebPart');
-
-    this.aadClient.get(this.properties.k2ServerURL + '/api/workflow/preview/tasks', AadHttpClient.configurations.v1)
-      .then((res: HttpClientResponse): Promise<any> => {
-        
-        return res.json();
-      })
-      .then((worklist: any): void => {
+    this.context.statusRenderer.displayLoadingIndicator(this.domElement, 'Loading...');
+      this._dataReader.getData(this.properties.k2ServerURL)
+      .then((worklist: IK2Worklist): void => {
         this.context.statusRenderer.clearLoadingIndicator(this.domElement);
-        this.domElement.innerHTML = `
-      <div class="${ styles.k2ApiWebPart }">
-
-      <div class="${ styles.row }">
-      <div class="${ styles.column }">
-        <span class="${ styles.title }">K2 Worklist</span>
-        </div>
-        </div>
-              <table>
-              <tr class="ms-Grid-row"><th class="ms-Grid-col ms-u-sm5 ms-u-md3 ms-u-lg2 ms-bgColor-themeLight  ms-font-m-plus">Form URL</th><th class="ms-Grid-col ms-u-sm5 ms-u-md3 ms-u-lg3 ms-bgColor-themeLight  ms-font-m-plus">Workflow Name</th><th class="ms-Grid-col ms-u-sm5 ms-u-md3 ms-u-lg3 ms-bgColor-themeLight  ms-font-m-plus">Folio</th><th class="ms-Grid-col ms-u-sm5 ms-u-md3 ms-u-lg2 ms-bgColor-themeLight  ms-font-m-plus">Activity</th><th class="ms-Grid-col ms-u-sm5 ms-u-md3 ms-u-lg2 ms-bgColor-themeLight  ms-font-m-plus">Viewflow</th></tr>
-              ${worklist.tasks.map(t => `<tr class="ms-Grid-row"><td class="ms-Grid-col ms-u-sm5 ms-u-md3 ms-u-lg2 ms-font-m"><a href="${t.formURL}" target="_blank" class="${ styles.button }">Open Form</a></td><td class="ms-Grid-col ms-u-sm5 ms-u-md3 ms-u-lg3 ms-font-m">${t.workflowDisplayName}</td><td class="ms-Grid-col ms-u-sm5 ms-u-md3 ms-u-lg3 ms-font-m">${t.workflowInstanceFolio}</td><td class="ms-Grid-col ms-u-sm5 ms-u-md3 ms-u-lg2 ms-font-m">${t.activityName}</td><td class="ms-Grid-col ms-u-sm5 ms-u-md3 ms-u-lg2 ms-font-m"><a href="${t.viewFlowURL}" target="_blank">View</a></td>`).join('')}
-              </table>
-              <p>Available tasks: ${worklist.itemCount}</p>
-             
-
-      </div>`;
+        this.domElement.innerHTML = K2DataView.getWorklistHtml(worklist);
       }, (err: any): void => {
         this.context.statusRenderer.renderError(this.domElement, err);
       });
